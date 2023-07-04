@@ -1,0 +1,10 @@
+# Let Git decide whether a file is text or binary. If it is text, line endings
+# are normalized to LF every time the file is checked in.
+#
+# Once we need to store some binary files in the repo, it's best to explicitly
+# mark certain file extensions as binary by adding a line like "*.jpg binary"
+# (see https://git-scm.com/docs/gitattributes#_using_macro_attributes). This
+# avoids the hypothetical (unlikely in practice) problem of Git incorrectly
+# treating a binary file as text and applying an end-of-line conversion, which
+# would likely result in corruption of the binary file.
+* text=auto
