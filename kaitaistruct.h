@@ -213,8 +213,6 @@ typedef struct ks_array_usertype_generic
 
 ks_config* ks_config_create_internal(ks_log log, ks_ptr_inflate inflate, ks_ptr_str_decode str_decode);
 
-ks_handle* ks_handle_create(ks_stream* stream, void* data, ks_type type, int type_size, int internal_read_size, ks_usertype_generic* parent);
-
 ks_stream* ks_stream_create_from_bytes(ks_bytes* bytes);
 ks_stream* ks_stream_get_root(ks_stream* stream);
 ks_usertype_generic* ks_usertype_get_root(ks_usertype_generic* data);
@@ -366,7 +364,8 @@ struct ks_config
 
 #ifdef KS_DEPEND_ON_INTERNALS
 
-void* ks_alloc(ks_config* config, uint64_t len);
+void* ks_alloc_data(ks_config* config, uint64_t len);
+void* ks_alloc_obj(ks_stream* stream, int size, ks_type type, int type_size, int internal_read_size, ks_usertype_generic* parent);
 void* ks_realloc(ks_config* config, void* old, uint64_t len);
 
 #endif
