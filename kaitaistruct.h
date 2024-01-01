@@ -85,6 +85,7 @@ void ks_string_set_error(ks_string* str, ks_error error);
 
 ks_config* ks_usertype_get_config(ks_usertype_generic* base);
 ks_stream* ks_usertype_get_stream(ks_usertype_generic* base);
+void* ks_usertype_get_internal_read(ks_usertype_generic* base);
 
 /* Typeinfo */
 
@@ -419,13 +420,13 @@ void* ks_realloc(ks_config* config, void* old, uint64_t len);
 #if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 8) || __clang__
 #define FIELD(expr, type, field)                                          \
     ({                                                              \
-        __auto_type expr_ = (expr);                                 \
-        __auto_type ret = ((type##_internal*)HANDLE(expr_)->internal_read)->_get_##field((type*)expr_);    \
+        ks_usertype_generic* expr_ = (ks_usertype_generic*)(expr);                                 \
+        __auto_type ret = ((type##_internal*)ks_usertype_get_internal_read(expr_))->_get_##field((type*)expr_);    \
         ret;                                                        \
     })
 #else
 #define FIELD(expr, type, field) \
-    ((type##_internal*)HANDLE(expr)->internal_read)->_get_##field((type*)expr)
+    ((type##_internal*)ks_usertype_get_internal_read((ks_usertype_generic*)(expr)))->_get_##field((type*)expr)
 #endif
 
 #endif

@@ -1269,6 +1269,11 @@ ks_stream* ks_usertype_get_stream(ks_usertype_generic* base)
      return base->handle->stream;
 }
 
+void* ks_usertype_get_internal_read(ks_usertype_generic* base)
+{
+    return base->handle->internal_read;
+}
+
 ks_error ks_stream_get_error(ks_stream* stream)
 {
     return stream->config->error;
