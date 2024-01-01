@@ -388,6 +388,7 @@ void* ks_realloc(ks_config* config, void* old, uint64_t len);
 #define KS_ASSERT(expr, message, errorcode, DEFAULT) \
     if (expr) { \
         KS_ERROR(stream->config, message, errorcode); \
+        return DEFAULT; \
     }
 
 #define KS_ASSERT_VOID(expr, message, errorcode) \
