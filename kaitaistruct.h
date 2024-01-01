@@ -219,6 +219,7 @@ ks_stream* ks_stream_create_from_bytes(ks_bytes* bytes);
 ks_stream* ks_stream_get_root(ks_stream* stream);
 ks_error ks_stream_get_error(ks_stream* stream);
 ks_usertype_generic* ks_usertype_get_root(ks_usertype_generic* data);
+ks_config* ks_stream_get_config(ks_stream* stream);
 
 uint8_t ks_stream_read_u1(ks_stream* stream);
 uint16_t ks_stream_read_u2le(ks_stream* stream);

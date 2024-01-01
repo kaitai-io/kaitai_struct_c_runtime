@@ -1264,6 +1264,11 @@ ks_config* ks_usertype_get_config(ks_usertype_generic* base)
     return base->handle->stream->config;
 }
 
+ks_config* ks_stream_get_config(ks_stream* stream)
+{
+    return stream->config;
+}
+
 ks_stream* ks_usertype_get_stream(ks_usertype_generic* base)
 {
      return base->handle->stream;
