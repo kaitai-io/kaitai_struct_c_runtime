@@ -1,4 +1,4 @@
-#include "kaitaistruct.h"
+#include "kaitaistruct_internal.h"
 
 struct ks_stream
 {
