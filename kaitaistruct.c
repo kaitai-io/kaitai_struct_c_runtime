@@ -1,5 +1,63 @@
-#define KS_DEPEND_ON_INTERNALS
 #include "kaitaistruct.h"
+
+struct ks_stream
+{
+    ks_config* config;
+    ks_bool is_file;
+    FILE* file;
+    uint8_t* data;
+    uint64_t start;
+    uint64_t length;
+    uint64_t pos;
+    uint64_t bits;
+    int bits_left;
+    struct ks_stream* parent;
+};
+
+struct ks_handle
+{
+    ks_stream* stream;
+    void* internal_read;
+    struct ks_usertype_generic* parent;
+    int pos;
+    void* data;
+    ks_type type;
+    int type_size;
+    void* write_func; /* To write back */
+    uint64_t last_size; /* To make sure the size when writing back isn't too big */
+};
+
+struct ks_bytes
+{
+    ks_usertype_generic kaitai_base;
+    uint64_t pos;
+    uint64_t length;
+    uint8_t* data_direct;
+};
+
+#define KS_MAX_MEMINFO 100
+struct ks_memory_info
+{
+    int count;
+    void* data[KS_MAX_MEMINFO];
+    struct ks_memory_info* next;
+};
+typedef struct ks_memory_info ks_memory_info;
+
+struct ks_config
+{
+    ks_error error;
+    ks_stream* fake_stream;
+    ks_ptr_inflate inflate;
+    ks_ptr_str_decode str_decode;
+    ks_log log;
+    struct ks_memory_info* meminfo_start;
+    struct ks_memory_info* meminfo_current;
+    void **meminfo_last_realloc;
+};
+
+#define HANDLE(expr) \
+    ((ks_usertype_generic*)expr)->handle
 
 #define VOID
 

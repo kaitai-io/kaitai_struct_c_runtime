@@ -84,8 +84,6 @@ void ks_bytes_set_error(ks_bytes* bytes, ks_error error);
 void ks_string_set_error(ks_string* str, ks_error error);
 
 ks_config* ks_usertype_get_config(ks_usertype_generic* base);
-ks_stream* ks_usertype_get_stream(ks_usertype_generic* base);
-void* ks_usertype_get_internal_read(ks_usertype_generic* base);
 
 /* Typeinfo */
 
@@ -221,6 +219,8 @@ ks_error ks_stream_get_error(ks_stream* stream);
 ks_usertype_generic* ks_usertype_get_root(ks_usertype_generic* data);
 ks_usertype_generic* ks_usertype_get_parent(ks_usertype_generic* base);
 ks_config* ks_stream_get_config(ks_stream* stream);
+ks_stream* ks_usertype_get_stream(ks_usertype_generic* base);
+void* ks_usertype_get_internal_read(ks_usertype_generic* base);
 
 uint8_t ks_stream_read_u1(ks_stream* stream);
 uint16_t ks_stream_read_u2le(ks_stream* stream);
@@ -310,78 +310,7 @@ ks_bytes* ks_inflate(ks_config* config, ks_bytes* bytes);
 void ks_log_error(const ks_stream* stream, ks_error error, const char* message, const char* file, int line);
 ks_bool ks_check_error(const ks_stream* stream, const char* file, int line);
 
-/* Internal structures */
-
-#ifdef KS_DEPEND_ON_INTERNALS
-
-struct ks_stream
-{
-    ks_config* config;
-    ks_bool is_file;
-    FILE* file;
-    uint8_t* data;
-    uint64_t start;
-    uint64_t length;
-    uint64_t pos;
-    uint64_t bits;
-    int bits_left;
-    struct ks_stream* parent;
-};
-
-struct ks_handle
-{
-    ks_stream* stream;
-    void* internal_read;
-    struct ks_usertype_generic* parent;
-    int pos;
-    void* data;
-    ks_type type;
-    int type_size;
-    void* write_func; /* To write back */
-    uint64_t last_size; /* To make sure the size when writing back isn't too big */
-};
-
-struct ks_bytes
-{
-    ks_usertype_generic kaitai_base;
-    uint64_t pos;
-    uint64_t length;
-    uint8_t* data_direct;
-};
-
-#define KS_MAX_MEMINFO 100
-struct ks_memory_info
-{
-    int count;
-    void* data[KS_MAX_MEMINFO];
-    struct ks_memory_info* next;
-};
-typedef struct ks_memory_info ks_memory_info;
-
-struct ks_config
-{
-    ks_error error;
-    ks_stream* fake_stream;
-    ks_ptr_inflate inflate;
-    ks_ptr_str_decode str_decode;
-    ks_log log;
-    struct ks_memory_info* meminfo_start;
-    struct ks_memory_info* meminfo_current;
-    void **meminfo_last_realloc;
-};
-
-#endif
-
-/* Internal Functions */
-
 /* Internal Macros */
-
-#ifdef KS_DEPEND_ON_INTERNALS
-
-#define HANDLE(expr) \
-    ((ks_usertype_generic*)expr)->handle
-
-#endif
 
 #define KS_ASSERT(expr, message, errorcode, DEFAULT) \
     if (expr) { \
