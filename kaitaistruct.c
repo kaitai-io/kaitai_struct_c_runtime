@@ -1268,3 +1268,8 @@ ks_error ks_stream_get_error(ks_stream* stream)
 {
     return stream->config->error;
 }
+
+ks_bytes* ks_inflate(ks_config* config, ks_bytes* bytes)
+{
+    return config->inflate(bytes);
+}

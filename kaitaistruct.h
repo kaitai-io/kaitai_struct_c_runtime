@@ -299,6 +299,8 @@ int64_t ks_mod(int64_t a, int64_t b);
 int64_t ks_div(int64_t a, int64_t b);
 
 
+ks_bytes* ks_inflate(ks_config* config, ks_bytes* bytes);
+
 /* Internal structures */
 
 #ifdef KS_DEPEND_ON_INTERNALS
@@ -431,7 +433,7 @@ void* ks_realloc(ks_config* config, void* old, uint64_t len);
 
 #ifdef KS_USE_ZLIB
 #include <zlib.h>
-static ks_bytes* ks_inflate(ks_bytes* bytes)
+static ks_bytes* ks_inflate_handler(ks_bytes* bytes)
 {
     uint64_t length_in = ks_bytes_get_length(bytes);
     uint8_t* data_in = 0;
@@ -488,7 +490,7 @@ static ks_bytes* ks_inflate(ks_bytes* bytes)
     return 0;
 }
 #else
-static ks_bytes* ks_inflate(ks_bytes* bytes)
+static ks_bytes* ks_inflate_handler(ks_bytes* bytes)
 {
     ks_bytes_set_error(bytes, KS_ERROR_ZLIB_MISSING);
     return 0;
@@ -550,7 +552,7 @@ static ks_string* ks_str_decode(ks_string* src, const char* src_enc)
 
 static ks_config* ks_config_create(ks_log log)
 {
-    return ks_config_create_internal(log, ks_inflate, ks_str_decode);
+    return ks_config_create_internal(log, ks_inflate_handler, ks_str_decode);
 }
 
 #endif
