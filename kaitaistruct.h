@@ -500,7 +500,7 @@ static ks_bytes* ks_inflate_handler(ks_bytes* bytes)
 #ifdef KS_USE_ICONV
 #include <iconv.h>
 #include <errno.h>
-static ks_string* ks_str_decode(ks_string* src, const char* src_enc) {
+static ks_string* ks_str_decode_handler(ks_string* src, const char* src_enc) {
     iconv_t cd = iconv_open("UTF-8", src_enc);
     size_t src_left = src->len;
     size_t dst_len = src->len * 2;
@@ -544,7 +544,7 @@ static ks_string* ks_str_decode(ks_string* src, const char* src_enc) {
     return ret;
 }
 #else
-static ks_string* ks_str_decode(ks_string* src, const char* src_enc)
+static ks_string* ks_str_decode_handler(ks_string* src, const char* src_enc)
 {
     return src;
 }
@@ -552,7 +552,7 @@ static ks_string* ks_str_decode(ks_string* src, const char* src_enc)
 
 static ks_config* ks_config_create(ks_log log)
 {
-    return ks_config_create_internal(log, ks_inflate_handler, ks_str_decode);
+    return ks_config_create_internal(log, ks_inflate_handler, ks_str_decode_handler);
 }
 
 #endif
