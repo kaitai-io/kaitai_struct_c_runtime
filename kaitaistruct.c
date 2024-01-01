@@ -1263,3 +1263,8 @@ ks_config* ks_usertype_get_config(ks_usertype_generic* base)
 {
     return base->handle->stream->config;
 }
+
+ks_error ks_stream_get_error(ks_stream* stream)
+{
+    return stream->config->error;
+}

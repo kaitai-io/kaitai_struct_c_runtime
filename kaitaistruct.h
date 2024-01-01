@@ -215,6 +215,7 @@ ks_config* ks_config_create_internal(ks_log log, ks_ptr_inflate inflate, ks_ptr_
 
 ks_stream* ks_stream_create_from_bytes(ks_bytes* bytes);
 ks_stream* ks_stream_get_root(ks_stream* stream);
+ks_error ks_stream_get_error(ks_stream* stream);
 ks_usertype_generic* ks_usertype_get_root(ks_usertype_generic* data);
 
 uint8_t ks_stream_read_u1(ks_stream* stream);
