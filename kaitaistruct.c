@@ -99,7 +99,7 @@ void* ks_realloc(ks_config* config, void* old, uint64_t len)
 
     /* Should never happen */
 
-    KS_ERROR(config, "Can't realloc data that was not allocated using ks_alloc/ks_realloc!", KS_ERROR_REALLOC_FAILED);
+    ks_log_error(config->fake_stream, KS_ERROR_REALLOC_FAILED, "Can't realloc data that was not allocated using ks_alloc/ks_realloc!", __FILE__, __LINE__);
     return 0;
 }
 
@@ -1282,4 +1282,24 @@ ks_error ks_stream_get_error(ks_stream* stream)
 ks_bytes* ks_inflate(ks_config* config, ks_bytes* bytes)
 {
     return config->inflate(bytes);
+}
+
+void ks_log_error(const ks_stream* stream, ks_error error, const char* message, const char* file, int line)
+{
+    char buf[1024];
+    stream->config->error = error;
+    sprintf(buf, "%s:%d - %s\n", file, line, message);
+    stream->config->log(buf);
+}
+
+ks_bool ks_check_error(const ks_stream* stream, const char* file, int line)
+{
+    char buf[1024];
+    if (!stream->config->error)
+    {
+        return 0;
+    }
+    sprintf(buf, "%s:%d\n", file, line);
+    stream->config->log(buf);
+    return 1;
 }

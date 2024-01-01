@@ -300,8 +300,13 @@ double ks_array_max_float(ks_usertype_generic* array);
 int64_t ks_mod(int64_t a, int64_t b);
 int64_t ks_div(int64_t a, int64_t b);
 
+void* ks_alloc_data(ks_config* config, uint64_t len);
+void* ks_alloc_obj(ks_stream* stream, int size, ks_type type, int type_size, int internal_read_size, ks_usertype_generic* parent);
+void* ks_realloc(ks_config* config, void* old, uint64_t len);
 
 ks_bytes* ks_inflate(ks_config* config, ks_bytes* bytes);
+void ks_log_error(const ks_stream* stream, ks_error error, const char* message, const char* file, int line);
+ks_bool ks_check_error(const ks_stream* stream, const char* file, int line);
 
 /* Internal structures */
 
@@ -367,14 +372,6 @@ struct ks_config
 
 /* Internal Functions */
 
-#ifdef KS_DEPEND_ON_INTERNALS
-
-void* ks_alloc_data(ks_config* config, uint64_t len);
-void* ks_alloc_obj(ks_stream* stream, int size, ks_type type, int type_size, int internal_read_size, ks_usertype_generic* parent);
-void* ks_realloc(ks_config* config, void* old, uint64_t len);
-
-#endif
-
 /* Internal Macros */
 
 #ifdef KS_DEPEND_ON_INTERNALS
@@ -382,17 +379,11 @@ void* ks_realloc(ks_config* config, void* old, uint64_t len);
 #define HANDLE(expr) \
     ((ks_usertype_generic*)expr)->handle
 
-#define KS_ERROR(config, message, errorcode) \
-    { \
-        char buf[1024];     \
-        config->error = errorcode; \
-        sprintf(buf, "%s:%d - %s\n", __FILE__, __LINE__, message); \
-        config->log(buf);   \
-    }
+#endif
 
 #define KS_ASSERT(expr, message, errorcode, DEFAULT) \
     if (expr) { \
-        KS_ERROR(stream->config, message, errorcode); \
+        ks_log_error(stream, errorcode, message, __FILE__, __LINE__); \
         return DEFAULT; \
     }
 
@@ -404,10 +395,7 @@ void* ks_realloc(ks_config* config, void* old, uint64_t len);
 
 #define KS_CHECK(expr, DEFAULT) \
     expr; \
-    if (stream->config->error) { \
-        char buf[1024]; \
-        sprintf(buf, "%s:%d\n", __FILE__, __LINE__); \
-        stream->config->log(buf);   \
+    if (ks_check_error(stream, __FILE__, __LINE__)) { \
         return DEFAULT; \
     }
 
@@ -429,7 +417,6 @@ void* ks_realloc(ks_config* config, void* old, uint64_t len);
     ((type##_internal*)ks_usertype_get_internal_read((ks_usertype_generic*)(expr)))->_get_##field((type*)expr)
 #endif
 
-#endif
 
 /* Dynamic functions */
 
