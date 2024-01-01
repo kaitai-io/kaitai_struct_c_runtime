@@ -84,6 +84,7 @@ void ks_bytes_set_error(ks_bytes* bytes, ks_error error);
 void ks_string_set_error(ks_string* str, ks_error error);
 
 ks_config* ks_usertype_get_config(ks_usertype_generic* base);
+ks_stream* ks_usertype_get_stream(ks_usertype_generic* base);
 
 /* Typeinfo */
 
