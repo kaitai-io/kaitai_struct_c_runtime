@@ -1259,6 +1259,11 @@ ks_usertype_generic* ks_usertype_get_root(ks_usertype_generic* data)
     return data;
 }
 
+ks_usertype_generic* ks_usertype_get_parent(ks_usertype_generic* base)
+{
+    return base->handle->parent;
+}
+
 ks_config* ks_usertype_get_config(ks_usertype_generic* base)
 {
     return base->handle->stream->config;
